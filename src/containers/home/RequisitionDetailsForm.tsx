@@ -7,8 +7,11 @@ import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import { IRequisitionDetails } from "../../interface/forms";
 import { genderOptions, urgencyOptions } from "./constants";
+import { useData } from "./DataProvider";
 
 const RequisitionDetailsForm: React.FC = () => {
+  const { state, setState } = useData();
+
   const {
     handleChange,
     errors,
@@ -19,12 +22,7 @@ const RequisitionDetailsForm: React.FC = () => {
     setFieldTouched,
     setFieldValue,
   } = useFormik<IRequisitionDetails>({
-    initialValues: {
-      requisitionTitle: "",
-      noOfOpenings: 0,
-      urgency: "",
-      gender: "",
-    },
+    initialValues: state.requisitionDetails,
     validationSchema: Yup.object().shape({
       requisitionTitle: Yup.string().required("Requisition title is required"),
       noOfOpenings: Yup.number()
@@ -36,9 +34,19 @@ const RequisitionDetailsForm: React.FC = () => {
       gender: Yup.string().required("Gender is required"),
     }),
     onSubmit: (values) => {
-      //  Go to Next Step
+      setState((prevState) => ({
+        ...prevState,
+        requisitionDetails: values,
+      }));
     },
   });
+
+  React.useEffect(() => {
+    setState((prevState) => ({
+      ...prevState,
+      requisitionDetails: values,
+    }));
+  }, [values, setState]);
 
   return (
     <Box width="100%" as="form" onSubmit={handleSubmit as any}>

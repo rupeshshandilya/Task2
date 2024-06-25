@@ -1,19 +1,18 @@
 import { Button, Flex, Box } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import FormInput from "../../components/formComponents/FormInput";
 import { IJobDetails } from "../../interface/forms";
+import { useData } from "./DataProvider";
 
 const JobDetailsForm: React.FC = () => {
+  const {state, setState} = useData();
+
   const { handleChange, errors, touched, handleBlur, handleSubmit, values } =
     useFormik<IJobDetails>({
-      initialValues: {
-        jobTitle: "",
-        jobDetails: "",
-        jobLocation: "",
-      },
+      initialValues: state.jobDetails,
       validationSchema: Yup.object().shape({
         jobTitle: Yup.string().required("Job Title is required"),
         jobDetails: Yup.string().required("Job Details is required"),
@@ -22,9 +21,19 @@ const JobDetailsForm: React.FC = () => {
       }),
       onSubmit: (values) => {
         console.log({ values });
-        // Go to next step
+        setState((prevState) => ({
+          ...prevState,
+          jobDetails: values,
+        }))
       },
     });
+
+    useEffect(() => {
+      setState((prevState) => ({
+        ...prevState,
+        jobDetails: values,
+      }))
+    },[values,setState])
 
   return (
     <Box width="100%" as="form" onSubmit={handleSubmit as any}>
