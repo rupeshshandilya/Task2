@@ -79,7 +79,7 @@ const PreviewCard: React.FC = () => {
         <Box maxH="50rem" overflowY="auto" px="24px" pb="24px">
           <DataCard title="Requisition Details">
             <KeyValue title="Urgency" value={state.requisitionDetails.urgency} />
-            {/* <KeyValue title="Gender" value={state.requisitionDetails.gender} /> */}
+            <KeyValue title="Gender" value={state.requisitionDetails.gender} />
           </DataCard>
           <DataCard title="Job Detail">
             <KeyValue title="Job Title" value={state.jobDetails.jobTitle} />
