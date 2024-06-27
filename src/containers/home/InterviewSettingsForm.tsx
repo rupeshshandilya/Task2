@@ -12,8 +12,13 @@ import {
 import { useData } from "./DataProvider";
 import * as Yup from "yup";
 
+interface InterviewSettingsFormProps {
+  handleTabChange: (index:number) => void;
+}
 
-const InterviewDetailsForm: React.FC = () => {
+const InterviewDetailsForm: React.FC<InterviewSettingsFormProps> = ({
+  handleTabChange,
+}) => {
   const {state, setState} = useData();
 
   const {
@@ -31,7 +36,6 @@ const InterviewDetailsForm: React.FC = () => {
       interviewLanguage: Yup.string().required("Interview language is required"),
     }),
     onSubmit: (values) => {
-      console.log({ values });
       setState((prevState) => ({
         ...prevState,
         interviewSettings: values,
@@ -84,7 +88,7 @@ const InterviewDetailsForm: React.FC = () => {
           value={values.interviewLanguage}
         />
         <Flex w="100%" justify="flex-end" mt="4rem" gap="20px">
-          <Button colorScheme="gray" type="button">
+          <Button colorScheme="gray" type="button" onClick={() => handleTabChange(1)}>
             Previous
           </Button>
           <Button colorScheme="red" type="submit">
