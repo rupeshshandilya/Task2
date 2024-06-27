@@ -7,7 +7,10 @@ import FormInput from "../../components/formComponents/FormInput";
 import { IJobDetails } from "../../interface/forms";
 import { useData } from "./DataProvider";
 
-const JobDetailsForm: React.FC = () => {
+interface JobDetailsFormProps {
+  handleTabChange: (index:number) => void;
+}
+const JobDetailsForm: React.FC<JobDetailsFormProps> = ({ handleTabChange }) => {
   const {state, setState} = useData();
 
   const { handleChange, errors, touched, handleBlur, handleSubmit, values } =
@@ -17,14 +20,14 @@ const JobDetailsForm: React.FC = () => {
         jobTitle: Yup.string().required("Job Title is required"),
         jobDetails: Yup.string().required("Job Details is required"),
         jobLocation: Yup.string().required("Job Location is required"),
-        jobPosition: Yup.string().required("Job position is required"),
       }),
       onSubmit: (values) => {
-        console.log({ values });
         setState((prevState) => ({
           ...prevState,
           jobDetails: values,
-        }))
+        }));
+        // Navigate to the next tab
+        handleTabChange(2);
       },
     });
 
@@ -69,7 +72,7 @@ const JobDetailsForm: React.FC = () => {
           value={values.jobLocation}
         />
         <Flex w="100%" justify="flex-end" mt="4rem" gap="20px">
-          <Button colorScheme="gray" type="button">
+          <Button colorScheme="gray" type="button" onClick={() => handleTabChange(0)}>
             Previous
           </Button>
           <Button colorScheme="red" type="submit">
