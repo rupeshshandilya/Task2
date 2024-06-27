@@ -1,5 +1,5 @@
 import { Button, Flex, Box } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -9,7 +9,10 @@ import { IRequisitionDetails } from "../../interface/forms";
 import { genderOptions, urgencyOptions } from "./constants";
 import { useData } from "./DataProvider";
 
-const RequisitionDetailsForm: React.FC = () => {
+interface RequisitionDetailsFormProps {
+  handleTabChange: (index:number) => void;
+}
+const RequisitionDetailsForm: React.FC<RequisitionDetailsFormProps> = ({ handleTabChange }) => {
   const { state, setState } = useData();
 
   const {
@@ -38,10 +41,12 @@ const RequisitionDetailsForm: React.FC = () => {
         ...prevState,
         requisitionDetails: values,
       }));
+      // Navigate to the next tab
+      handleTabChange(1); 
     },
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     setState((prevState) => ({
       ...prevState,
       requisitionDetails: values,
