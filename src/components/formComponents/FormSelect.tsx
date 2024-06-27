@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "@chakra-ui/react";
 import FromWrapper from "./FormWrapper";
 import { IFormInputProps } from "@src/interface/forms";
@@ -28,6 +28,13 @@ const FormSelect: React.FC<IFormSelectProps> = ({
   options,
 }) => {
   const theme = useTheme();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+    }
+  }, []);
 
   const handleChange = (value: any) => {
     onChange && onChange(name, value?.value);
@@ -45,53 +52,60 @@ const FormSelect: React.FC<IFormSelectProps> = ({
       error={error as string}
       touched={touched}
     >
-      <ReactSelect
-        name={name}
-        placeholder={placeholder}
-        value={options.find((item: { value: string }) => item?.value === value)}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        options={options}
-        // styles
-        styles={{
-          container: (base) => ({
-            ...base,
-            width: "100%",
-            minWidth: "none",
-            height: "auto",
-            maxHeight: "none",
-            minHeight: "none",
-          }),
-          control: (base, { isFocused }) => ({
-            ...base,
-            width: "100%",
-            minWidth: "272px",
-            height: "45px",
-            border: isFocused
-              ? `1px solid ${theme.colors.primary}`
-              : error
-              ? `1px solid ${theme.colors.errorRed}`
-              : "1px solid #c0bcd7",
-            backgroundColor: theme.colors.inputBg,
-            borderRadius: "10px",
-            fontSize: ".875rem",
-            fontWeight: "500",
-            "&:hover": {
-              border: `1px solid ${theme.colors.primary}`,
-            },
-          }),
-          valueContainer: (base) => ({
-            ...base,
-            paddingLeft: "20px",
-          }),
-          option: (base, { isFocused }) => ({
-            ...base,
-            fontSize: ".875rem",
-            fontWeight: "500",
-          }),
-        }}
-        {...selectProps}
-      />
+      {isClient && (
+        <ReactSelect
+          name={name}
+          placeholder={placeholder}
+          value={options.find((item: { value: string }) => item?.value === value)}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          options={options}
+          menuPortalTarget={document.body} 
+          menuPosition="fixed" 
+          styles={{
+            container: (base) => ({
+              ...base,
+              width: "100%",
+              minWidth: "none",
+              height: "auto",
+              maxHeight: "none",
+              minHeight: "none",
+            }),
+            control: (base, { isFocused }) => ({
+              ...base,
+              width: "100%",
+              minWidth: "272px",
+              height: "45px",
+              border: isFocused
+                ? `1px solid ${theme.colors.primary}`
+                : error
+                ? `1px solid ${theme.colors.errorRed}`
+                : "1px solid #c0bcd7",
+              backgroundColor: theme.colors.inputBg,
+              borderRadius: "10px",
+              fontSize: ".875rem",
+              fontWeight: "500",
+              "&:hover": {
+                border: `1px solid ${theme.colors.primary}`,
+              },
+            }),
+            valueContainer: (base) => ({
+              ...base,
+              paddingLeft: "20px",
+            }),
+            option: (base, { isFocused }) => ({
+              ...base,
+              fontSize: ".875rem",
+              fontWeight: "500",
+            }),
+            menuPortal: base => ({
+              ...base,
+              zIndex: 9999 
+            })
+          }}
+          {...selectProps}
+        />
+      )}
       {children}
     </FromWrapper>
   );
