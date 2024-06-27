@@ -10,11 +10,12 @@ import {
   Box,
   Grid,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import InterviewSettingsForm from "./InterviewSettingsForm";
 import JobDetailsForm from "./JobDetailsForm";
 import RequisitionForm from "./RequisitionDetailsForm";
 import DisplayCard from "./PreviewCard";
+import { useData } from "./DataProvider";
 
 const CustomTab: React.FC<TabProps> = ({ children, ...props }) => {
   return (
@@ -25,28 +26,35 @@ const CustomTab: React.FC<TabProps> = ({ children, ...props }) => {
 };
 
 const HomeLayout = () => {
+  const { state } = useData();
+  const [currentTab, setCurrentTab] = useState(0);
+  
+   const handleTabChange = (index: number) => {
+    // To update the state of the current tab
+     setCurrentTab(index);
+   };
   return (
     <Box w="100%">
       <Container maxW="1200px">
         <Heading fontFamily="Poppins" fontSize="1.5rem" my="2rem">
           Create Candidate Requisition
         </Heading>
-        <Tabs isLazy>
+        <Tabs isLazy index={currentTab} onChange={handleTabChange}>
           <TabList>
-            <CustomTab>Requistion Details</CustomTab>
-            <CustomTab>Job Details</CustomTab>
-            <CustomTab>Interview Settings</CustomTab>
+            <CustomTab isDisabled={false}>Requisition Details</CustomTab>
+            <CustomTab isDisabled={state.jobDetails.jobTitle.length > 1 ? false : true}>Job Details</CustomTab>
+            <CustomTab isDisabled={state.interviewSettings.interviewLanguage.length > 1 ? false : true}>Interview Settings</CustomTab>
           </TabList>
           <Grid display="grid" gridTemplateColumns="3fr 2fr" gap="24px">
             <TabPanels>
               <TabPanel>
-                <RequisitionForm />
+                <RequisitionForm handleTabChange={handleTabChange} />
               </TabPanel>
               <TabPanel>
-                <JobDetailsForm />
+                <JobDetailsForm handleTabChange={handleTabChange} />
               </TabPanel>
               <TabPanel>
-                <InterviewSettingsForm />
+                <InterviewSettingsForm handleTabChange={handleTabChange} />
               </TabPanel>
             </TabPanels>
             <DisplayCard />
